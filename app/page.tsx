@@ -1,5 +1,5 @@
-import { HashScopeApp } from "@/components/HashScopeApp";
+import { HashScopeExperience } from "@/components/HashScopeExperience";
 
 export default function Home() {
-  return <HashScopeApp />;
+  return <HashScopeExperience />;
 }

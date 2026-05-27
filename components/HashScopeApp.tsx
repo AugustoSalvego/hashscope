@@ -8,7 +8,7 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 import { MemoryBoard } from "@/components/MemoryBoard";
 import { MetricsStrip } from "@/components/MetricsStrip";
 import { content } from "@/data/content";
-import { DEFAULT_LANGUAGE, DEFAULT_MODE, TABLE_SIZE } from "@/data/project";
+import { DEFAULT_MODE, TABLE_SIZE } from "@/data/project";
 import {
   calculateLoadFactor,
   countElements,
@@ -19,6 +19,11 @@ import {
 } from "@/lib/hash";
 import type { HashMode, HashStep } from "@/types/hash";
 import type { Language } from "@/types/language";
+
+type HashScopeAppProps = {
+  language: Language;
+  onLanguageChange: (language: Language) => void;
+};
 
 const createIdleStep = (): HashStep => ({
   key: null,
@@ -38,8 +43,10 @@ const createInvalidStep = (): HashStep => ({
   message: "invalid",
 });
 
-export const HashScopeApp = () => {
-  const [language, setLanguage] = useState<Language>(DEFAULT_LANGUAGE);
+export const HashScopeApp = ({
+  language,
+  onLanguageChange,
+}: HashScopeAppProps) => {
   const [mode, setMode] = useState<HashMode>(DEFAULT_MODE);
   const [inputValue, setInputValue] = useState("");
   const [table, setTable] = useState(() => createEmptyTable(TABLE_SIZE));
@@ -104,7 +111,10 @@ export const HashScopeApp = () => {
   };
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 md:h-screen md:overflow-hidden">
+    <section
+      id="lab"
+      className="min-h-screen bg-slate-950 text-slate-100 md:h-screen md:overflow-hidden"
+    >
       <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-2 px-3 py-2 sm:px-4 md:h-screen md:min-h-0">
         <header className="flex shrink-0 items-center justify-between gap-3 rounded-xl border border-slate-800 bg-slate-950/80 px-3 py-2">
           <div className="min-w-0">
@@ -121,7 +131,7 @@ export const HashScopeApp = () => {
           <LanguageSelector
             language={language}
             copy={copy}
-            onChange={setLanguage}
+            onChange={onLanguageChange}
           />
         </header>
 
@@ -147,6 +157,6 @@ export const HashScopeApp = () => {
 
         <MemoryBoard copy={copy} mode={mode} table={table} step={visibleStep} />
       </div>
-    </main>
+    </section>
   );
 };
