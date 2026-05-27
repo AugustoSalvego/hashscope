@@ -1,4 +1,4 @@
-import type { HashCell, HashStep } from "@/types/hash";
+import type { HashCell, HashMode, HashStep } from "@/types/hash";
 
 const cloneTable = (table: HashCell[]): HashCell[] =>
   table.map((cell) => ({
@@ -39,6 +39,62 @@ export const calculateLoadFactor = (
   table: HashCell[],
   size: number,
 ): number => countElements(table) / size;
+
+export const previewSeparateChaining = (
+  table: HashCell[],
+  key: number,
+  size: number,
+): HashStep => {
+  const homeIndex = getHashIndex(key, size);
+  const targetCell = table[homeIndex];
+  const hasCollision = targetCell.values.length > 0;
+
+  return buildStep(
+    key,
+    homeIndex,
+    homeIndex,
+    hasCollision,
+    false,
+    hasCollision ? "preview-chain" : "preview",
+  );
+};
+
+export const previewOpenAddressing = (
+  table: HashCell[],
+  key: number,
+  size: number,
+): HashStep => {
+  const homeIndex = getHashIndex(key, size);
+  const hasCollision = table[homeIndex].values.length > 0;
+
+  for (let offset = 0; offset < size; offset += 1) {
+    const probeIndex = (homeIndex + offset) % size;
+    const probeCell = table[probeIndex];
+
+    if (probeCell.values.length === 0) {
+      return buildStep(
+        key,
+        homeIndex,
+        probeIndex,
+        hasCollision,
+        false,
+        hasCollision ? "preview-probed" : "preview",
+      );
+    }
+  }
+
+  return buildStep(key, homeIndex, null, true, true, "table-full");
+};
+
+export const previewHashInsert = (
+  table: HashCell[],
+  key: number,
+  size: number,
+  mode: HashMode,
+): HashStep =>
+  mode === "separate-chaining"
+    ? previewSeparateChaining(table, key, size)
+    : previewOpenAddressing(table, key, size);
 
 export const insertSeparateChaining = (
   table: HashCell[],

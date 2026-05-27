@@ -15,6 +15,7 @@ import {
   createEmptyTable,
   insertOpenAddressing,
   insertSeparateChaining,
+  previewHashInsert,
 } from "@/lib/hash";
 import type { HashMode, HashStep } from "@/types/hash";
 import type { Language } from "@/types/language";
@@ -26,6 +27,15 @@ const createIdleStep = (): HashStep => ({
   hasCollision: false,
   isTableFull: false,
   message: "idle",
+});
+
+const createInvalidStep = (): HashStep => ({
+  key: null,
+  homeIndex: null,
+  finalIndex: null,
+  hasCollision: false,
+  isTableFull: false,
+  message: "invalid",
 });
 
 export const HashScopeApp = () => {
@@ -43,6 +53,24 @@ export const HashScopeApp = () => {
     [table],
   );
 
+  const previewStep = useMemo<HashStep | null>(() => {
+    const trimmedValue = inputValue.trim();
+
+    if (trimmedValue.length === 0) {
+      return null;
+    }
+
+    const parsedValue = Number(trimmedValue);
+
+    if (!Number.isInteger(parsedValue)) {
+      return createInvalidStep();
+    }
+
+    return previewHashInsert(table, parsedValue, TABLE_SIZE, mode);
+  }, [inputValue, mode, table]);
+
+  const visibleStep = previewStep ?? step;
+
   const resetTable = () => {
     setTable(createEmptyTable(TABLE_SIZE));
     setStep(createIdleStep());
@@ -54,14 +82,7 @@ export const HashScopeApp = () => {
     const parsedValue = Number(trimmedValue);
 
     if (trimmedValue.length === 0 || !Number.isInteger(parsedValue)) {
-      setStep({
-        key: null,
-        homeIndex: null,
-        finalIndex: null,
-        hasCollision: false,
-        isTableFull: false,
-        message: "invalid",
-      });
+      setStep(createInvalidStep());
       return;
     }
 
@@ -93,7 +114,9 @@ export const HashScopeApp = () => {
                 {copy.header.title}
               </h1>
             </div>
-            <p className="truncate text-xs text-slate-500">{copy.header.subtitle}</p>
+            <p className="truncate text-xs text-slate-500">
+              {copy.header.subtitle}
+            </p>
           </div>
           <LanguageSelector
             language={language}
@@ -112,17 +135,17 @@ export const HashScopeApp = () => {
           onModeChange={handleModeChange}
         />
 
-        <ExecutionFlow copy={copy} mode={mode} step={step} />
+        <ExecutionFlow copy={copy} mode={mode} step={visibleStep} />
 
         <MetricsStrip
           copy={copy}
           mode={mode}
           elements={elements}
           loadFactor={loadFactor}
-          step={step}
+          step={visibleStep}
         />
 
-        <MemoryBoard copy={copy} mode={mode} table={table} step={step} />
+        <MemoryBoard copy={copy} mode={mode} table={table} step={visibleStep} />
       </div>
     </main>
   );

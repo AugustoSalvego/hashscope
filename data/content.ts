@@ -32,6 +32,9 @@ export type AppContent = {
     inserted: string;
     collision: string;
     resolved: string;
+    preview: string;
+    willCollide: string;
+    willResolve: string;
     tableFull: string;
     invalid: string;
     homeBucket: string;
@@ -45,6 +48,7 @@ export type AppContent = {
     collision: string;
     home: string;
     final: string;
+    preview: string;
     values: string;
     emptySlot: string;
     calculated: string;
@@ -106,6 +110,9 @@ export const content: Record<Language, AppContent> = {
       inserted: "inserido",
       collision: "colisão",
       resolved: "resolvido",
+      preview: "prévia",
+      willCollide: "vai colidir",
+      willResolve: "vai resolver",
       tableFull: "tabela cheia",
       invalid: "entrada inválida",
       homeBucket: "bucket original",
@@ -119,6 +126,7 @@ export const content: Record<Language, AppContent> = {
       collision: "COLLISION",
       home: "HOME",
       final: "FINAL",
+      preview: "PREVIEW",
       values: "chaves",
       emptySlot: "slot vazio",
       calculated: "calculado",
@@ -139,6 +147,9 @@ export const content: Record<Language, AppContent> = {
     stepMessages: {
       idle: "Insira 15, 25 e 35 para ver a colisão acontecer no bucket 5.",
       inserted: "A chave foi armazenada diretamente no bucket calculado.",
+      preview: "Prévia: a chave será armazenada diretamente no bucket calculado.",
+      "preview-chain": "Prévia: essa chave cairá em um bucket ocupado e formará uma colisão por encadeamento.",
+      "preview-probed": "Prévia: essa chave colidirá no bucket original e será resolvida por linear probing.",
       "collision-chain": "Colisão detectada: a chave foi adicionada à lista do mesmo bucket.",
       "collision-probed": "Colisão detectada: o linear probing procurou o próximo bucket livre.",
       "table-full": "A tabela está cheia. Não existe bucket livre para resolver a colisão.",
@@ -185,6 +196,9 @@ export const content: Record<Language, AppContent> = {
       inserted: "inserted",
       collision: "collision",
       resolved: "resolved",
+      preview: "preview",
+      willCollide: "will collide",
+      willResolve: "will resolve",
       tableFull: "table full",
       invalid: "invalid input",
       homeBucket: "home bucket",
@@ -198,6 +212,7 @@ export const content: Record<Language, AppContent> = {
       collision: "COLLISION",
       home: "HOME",
       final: "FINAL",
+      preview: "PREVIEW",
       values: "keys",
       emptySlot: "empty slot",
       calculated: "calculated",
@@ -218,6 +233,9 @@ export const content: Record<Language, AppContent> = {
     stepMessages: {
       idle: "Insert 15, 25 and 35 to watch the collision happen in bucket 5.",
       inserted: "The key was stored directly in the calculated bucket.",
+      preview: "Preview: the key will be stored directly in the calculated bucket.",
+      "preview-chain": "Preview: this key will hit an occupied bucket and create a chaining collision.",
+      "preview-probed": "Preview: this key will collide at the home bucket and be resolved by linear probing.",
       "collision-chain": "Collision detected: the key was appended to the same bucket list.",
       "collision-probed": "Collision detected: linear probing searched for the next free bucket.",
       "table-full": "The table is full. There is no free bucket to resolve the collision.",
@@ -264,6 +282,9 @@ export const content: Record<Language, AppContent> = {
       inserted: "inserito",
       collision: "collisione",
       resolved: "risolto",
+      preview: "anteprima",
+      willCollide: "colliderà",
+      willResolve: "sarà risolto",
       tableFull: "tabella piena",
       invalid: "input non valido",
       homeBucket: "bucket originale",
@@ -277,6 +298,7 @@ export const content: Record<Language, AppContent> = {
       collision: "COLLISION",
       home: "HOME",
       final: "FINAL",
+      preview: "PREVIEW",
       values: "chiavi",
       emptySlot: "slot vuoto",
       calculated: "calcolato",
@@ -297,6 +319,9 @@ export const content: Record<Language, AppContent> = {
     stepMessages: {
       idle: "Inserisci 15, 25 e 35 per vedere la collisione nel bucket 5.",
       inserted: "La chiave è stata salvata direttamente nel bucket calcolato.",
+      preview: "Anteprima: la chiave sarà salvata direttamente nel bucket calcolato.",
+      "preview-chain": "Anteprima: questa chiave finirà in un bucket occupato e creerà una collisione con concatenamento.",
+      "preview-probed": "Anteprima: questa chiave colliderebbe nel bucket originale e sarà risolta con linear probing.",
       "collision-chain": "Collisione rilevata: la chiave è stata aggiunta alla lista dello stesso bucket.",
       "collision-probed": "Collisione rilevata: il linear probing ha cercato il prossimo bucket libero.",
       "table-full": "La tabella è piena. Non esiste un bucket libero per risolvere la collisione.",

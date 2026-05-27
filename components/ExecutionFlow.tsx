@@ -8,9 +8,21 @@ type ExecutionFlowProps = {
 };
 
 const getResultLabel = (copy: AppContent, mode: HashMode, step: HashStep) => {
+  const isPreview = step.message.startsWith("preview");
+
   if (step.message === "invalid") return copy.flow.invalid;
   if (step.isTableFull) return copy.flow.tableFull;
   if (step.key === null) return copy.flow.idleResult;
+
+  if (isPreview && step.hasCollision && mode === "open-addressing") {
+    return copy.flow.willResolve;
+  }
+
+  if (isPreview && step.hasCollision) {
+    return copy.flow.willCollide;
+  }
+
+  if (isPreview) return copy.flow.preview;
   if (step.hasCollision && mode === "open-addressing") return copy.flow.resolved;
   if (step.hasCollision) return copy.flow.collision;
 

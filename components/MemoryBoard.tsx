@@ -40,6 +40,7 @@ export const MemoryBoard = ({
       {table.map((cell) => {
         const isHome = step.homeIndex === cell.index;
         const isFinal = step.finalIndex === cell.index;
+        const isPreview = step.message.startsWith("preview");
         const showFinal = mode === "open-addressing" && isFinal && step.key !== null;
         const showHome = isHome && step.key !== null;
         const hasOpenAddressingHomeCollision =
@@ -57,6 +58,7 @@ export const MemoryBoard = ({
             statusLabel={getStatusLabel(copy, cell)}
             isHome={showHome}
             isFinal={showFinal}
+            isPreview={isPreview}
             hasOpenAddressingHomeCollision={hasOpenAddressingHomeCollision}
           />
         );
@@ -72,6 +74,7 @@ type MemoryCellProps = {
   statusLabel: string;
   isHome: boolean;
   isFinal: boolean;
+  isPreview: boolean;
   hasOpenAddressingHomeCollision: boolean;
 };
 
@@ -82,6 +85,7 @@ const MemoryCell = ({
   statusLabel,
   isHome,
   isFinal,
+  isPreview,
   hasOpenAddressingHomeCollision,
 }: MemoryCellProps) => {
   const collisionState = cell.status === "collision" || hasOpenAddressingHomeCollision;
@@ -93,7 +97,9 @@ const MemoryCell = ({
 
   return (
     <article
-      className={`relative min-h-28 overflow-hidden rounded-xl border bg-slate-950/90 p-3 transition ${borderState}`}
+      className={`relative min-h-28 overflow-hidden rounded-xl border bg-slate-950/90 p-3 transition ${borderState} ${
+        isPreview && (isHome || isFinal) ? "border-dashed" : ""
+      }`}
     >
       <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(34,211,238,0.10)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.08)_1px,transparent_1px)] [background-size:18px_18px]" />
 
@@ -103,7 +109,9 @@ const MemoryCell = ({
             <p className="font-mono text-2xl font-black leading-none text-white">
               {cell.index}
             </p>
-            <p className="mt-1 font-mono text-[10px] text-slate-500">{address}</p>
+            <p className="mt-1 font-mono text-[10px] text-slate-500">
+              {address}
+            </p>
           </div>
           <span
             className={`rounded-full border px-2 py-1 font-mono text-[10px] font-bold ${
@@ -134,11 +142,16 @@ const MemoryCell = ({
               ))}
             </div>
           ) : (
-            <p className="font-mono text-xs text-slate-600">{copy.board.emptySlot}</p>
+            <p className="font-mono text-xs text-slate-600">
+              {copy.board.emptySlot}
+            </p>
           )}
         </div>
 
         <div className="flex min-h-5 flex-wrap gap-1.5">
+          {isPreview && (isHome || isFinal) ? (
+            <Marker label={copy.board.preview} tone="cyan" />
+          ) : null}
           {isHome ? <Marker label={copy.board.home} tone="cyan" /> : null}
           {hasOpenAddressingHomeCollision ? (
             <Marker label={copy.board.collision} tone="rose" />
