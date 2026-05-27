@@ -6,8 +6,6 @@ Interactive educational laboratory for understanding hash tables, collisions and
 
 ---
 
----
-
 ## Live Demo
 
 https://hashscope.vercel.app
